@@ -1,0 +1,215 @@
+﻿--// Hiệu ứng chữ tương lai + pháo hoa
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local player = Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "YutaIntro"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local msg = Instance.new("TextLabel")
+msg.Parent = gui
+msg.AnchorPoint = Vector2.new(0.5, 0.5)
+msg.Position = UDim2.new(0.5, 0, 0.5, 0)
+msg.Size = UDim2.new(0, 600, 0, 120)
+msg.BackgroundTransparency = 1
+msg.Text = "⚡ VTD Roblox ⚡"
+msg.TextColor3 = Color3.fromRGB(0, 255, 255)
+msg.Font = Enum.Font.GothamBlack
+msg.TextScaled = true
+msg.TextStrokeTransparency = 0
+msg.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+msg.TextTransparency = 1
+
+-- hiệu ứng pháo hoa nho nhỏ
+local function createFirework()
+    local part = Instance.new("Part")
+    part.Anchored = true
+    part.CanCollide = false
+    part.Size = Vector3.new(0.5,0.5,0.5)
+    part.Position = player.Character.HumanoidRootPart.Position + Vector3.new(math.random(-10,10), math.random(5,15), math.random(-10,10))
+    part.Transparency = 1
+    part.Parent = workspace
+
+    local firework = Instance.new("ParticleEmitter", part)
+    firework.Texture = "rbxassetid://243660364" -- sparkle
+    firework.Rate = 50
+    firework.Lifetime = NumberRange.new(1)
+    firework.Speed = NumberRange.new(10)
+    firework.SpreadAngle = Vector2.new(360,360)
+    firework.Color = ColorSequence.new(Color3.fromRGB(math.random(100,255), math.random(100,255), math.random(100,255)))
+    
+    game.Debris:AddItem(part,2)
+end
+
+-- 1. Hiện chữ
+local appear = TweenService:Create(msg, TweenInfo.new(1.5, Enum.EasingStyle.Quad), {
+    TextTransparency = 0
+})
+appear:Play()
+appear.Completed:Wait()
+
+-- 2. Đổi màu + pháo hoa trong 5 giây
+local startTime = tick()
+while tick() - startTime < 5 do
+    msg.TextColor3 = Color3.fromRGB(
+        math.random(0, 255),
+        math.random(180, 255),
+        math.random(200, 255)
+    )
+    createFirework()
+    task.wait(0.5)
+end
+
+-- 3. Biến mất
+local vanish = TweenService:Create(msg, TweenInfo.new(2, Enum.EasingStyle.Sine), {
+    TextTransparency = 1
+})
+vanish:Play()
+vanish.Completed:Wait()
+
+gui:Destroy()
+
+--// Sau Intro thì load UI chính
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+local UICorner = Instance.new("UICorner")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ImageButton.Parent = ScreenGui
+ImageButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Position = UDim2.new(0.10615778, 0, 0.16217947, 0)
+ImageButton.Size = UDim2.new(0, 40, 0, 40)
+ImageButton.Draggable = true
+ImageButton.Image = "http://www.roblox.com/asset/?id=124682499503385"
+
+UICorner.CornerRadius = UDim.new(1, 10) 
+UICorner.Parent = ImageButton
+
+ImageButton.MouseButton1Down:Connect(function()
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game)
+end)
+
+-- Load Fluent UI
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+repeat wait() until game:IsLoaded()
+local Window = Fluent:CreateWindow({
+    Title = "VTD Roblox Tổng Hợp true 2.4.0",
+    SubTitle = "Blox Fruit",
+    TabWidth = 157,
+    Size = UDim2.fromOffset(450, 300),
+    Acrylic = true,
+    Theme = "Light",
+    MinimizeKey = Enum.KeyCode.End
+})
+
+-- Tabs
+local Tabs = {
+    Main0=Window:AddTab({ Title="Thông Tin" }),
+    Main1=Window:AddTab({ Title="Script Blox fruit" }),
+    Main2=Window:AddTab({ Title="Grow A Garden" }),
+    Main3=Window:AddTab({ Title="99 đêm" }),
+    Main4=Window:AddTab({ Title="ink game" }),
+    Main5=Window:AddTab({ Title="Script của Yuta" }),
+    Main6=Window:AddTab({ Title="Fisch" }),
+    Main7=Window:AddTab({ Title="Dead Rails" }),
+}
+
+-- Tab 0: Thông Tin
+Tabs.Main0:AddButton({Title="Discord", Description="VTD Roblox Community", Callback=function() setclipboard("https://discord.gg/qEkEHgkQ") end})
+Tabs.Main0:AddButton({Title="Youtuber", Description="VTD Roblox", Callback=function() setclipboard("https://youtube.com/@vtd.roblox1?si=A5NM7LD-DIOE3a_0") end})
+
+-- Tab 1: Script Blox Fruit
+Tabs.Main1:AddButton({Title="Redz Hub", Description="", Callback=function()
+    local Settings = {JoinTeam = "Pirates"; Translator = true;}
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/newredz/BloxFruits/refs/heads/main/Source.luau"))(Settings)
+end})
+Tabs.Main1:AddButton({Title="w-azure Hub", Description="", Callback=function()
+    loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/85e904ae1ff30824c1aa007fc7324f8f.lua"))()
+end})
+Tabs.Main1:AddButton({Title="fix lag", Description="", Callback=function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))()
+end})
+
+-- Tab 2: Grow A Garden
+Tabs.Main2:AddButton({Title="nat hub", Description="", Callback=function()
+    loadstring(game:HttpGet("https://get.nathub.xyz/loader"))()
+end})
+
+-- Tab 5: Script của Yuta
+Tabs.Main5:AddButton({Title="Nhà tù", Description="Tạo ngôi nhà siêu to khổng lồ có thể đi vào", Callback=function()
+    local Workspace = game:GetService("Workspace")
+    local player = game:GetService("Players").LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    local function createPart(size, position, color, anchored, parent)
+        local part = Instance.new("Part")
+        part.Size = size
+        part.Position = position
+        part.Anchored = anchored
+        part.BrickColor = BrickColor.new(color)
+        part.Parent = parent
+        return part
+    end
+
+    local house = Instance.new("Model")
+    house.Name = "GiantHouse"
+    house.Parent = Workspace
+
+    local houseWidth = 50
+    local houseDepth = 50
+    local houseHeight = 30
+
+    createPart(Vector3.new(houseWidth,1,houseDepth), hrp.Position + Vector3.new(0,-0.5,0), "Earth green", true, house)
+    createPart(Vector3.new(1,houseHeight,houseDepth), hrp.Position + Vector3.new(-houseWidth/2, houseHeight/2,0), "Reddish brown", true, house)
+    createPart(Vector3.new(1,houseHeight,houseDepth), hrp.Position + Vector3.new(houseWidth/2, houseHeight/2,0), "Reddish brown", true, house)
+    createPart(Vector3.new(houseWidth,houseHeight,1), hrp.Position + Vector3.new(0, houseHeight/2,-houseDepth/2), "Reddish brown", true, house)
+    createPart(Vector3.new(houseWidth,houseHeight,1), hrp.Position + Vector3.new(0, houseHeight/2,houseDepth/2), "Reddish brown", true, house)
+    createPart(Vector3.new(houseWidth+2,1,houseDepth+2), hrp.Position + Vector3.new(0, houseHeight + 0.5,0), "Medium stone grey", true, house)
+
+    local door = createPart(Vector3.new(6,10,1), hrp.Position + Vector3.new(0,5,-houseDepth/2), "Brown", true, house)
+    door.Transparency = 0.5
+    door.CanCollide = false
+
+    print("Nhà tù siêu to đã xuất hiện! Bạn có thể đi vào bên trong.")
+end})
+
+-- Tab 6: Fisch
+Tabs.Main6:AddButton({Title="Speed Hub X", Description="Script Speed Hub X", Callback=function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+end})
+Tabs.Main6:AddButton({Title="Solix v2 Loader", Description="Script Solix v2", Callback=function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/debunked69/solixloader/refs/heads/main/solix%20v2%20new%20loader.lua"))()
+end})
+Tabs.Main6:AddButton({Title="Lunor Loader", Description="Script Lunor", Callback=function()
+    loadstring(game:HttpGet("https://lunor.dev/loader"))()
+end})
+Tabs.Main6:AddButton({Title="Luarmor Loader", Description="Script Luarmor", Callback=function()
+    loadstring(game:HttpGet("https://api.luarmor.net/files/v3/loaders/672a0ae340e8ce7e21a51e37c6bf0cc1.lua"))()
+end})
+
+Tabs.Main2:AddButton({Title="SolixHub", Description="SolixHub",
+loadstring(game:HttpGet("https://raw.githubusercontent.com/debunked69/solixloader/refs/heads/main/solix%20v2%20new%20loader.lua"))()
+end})
+
+Tabs.Main7:AddButton({Title="SpeedHubX", Description="SpeedHubX",
+loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+end})
+
+Tabs.Main7:AddButton({Title="NatHub", Description="NatHub",
+loadstring(game:HttpGet("https://get.nathub.xyz/loader"))()
+end})
+
+Tabs.Main7:AddButton({Title="SolixHub", Description="SolixHub",
+loadstring(game:HttpGet("https://raw.githubusercontent.com/debunked69/solixloader/refs/heads/main/solix%20v2%20new%20loader.lua"))()
+end})
+
+Tabs.Main7:AddButton({Title="Trung tâm Beecon", Description="Trung tâm Beecon",
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BaconBossScript/BeeconHub/main/BeeconHub"))()
+end})
